@@ -1,0 +1,51 @@
+{
+  "name": "music-lyric-utils",
+  "version": "0.0.0",
+  "description": "A Lyric Utils",
+  "main": "./dist/music-lyric-utils.js",
+  "module": "./dist/music-lyric-utils.mjs",
+  "types": "./dist/types/index.d.ts",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "rimraf dist && vite build && tsc --emitDeclarationOnly"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./*": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/music-lyric-utils.js",
+      "default": "./dist/music-lyric-utils.mjs"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Folltoshe/music-lyric-utils.git"
+  },
+  "keywords": [
+    "lrc",
+    "lyric",
+    "lyric-utils",
+    "lyric-player",
+    "lyric-parser"
+  ],
+  "author": "Folltoshe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Folltoshe/music-lyric-utils/issues"
+  },
+  "homepage": "https://github.com/Folltoshe/music-lyric-utils#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/lodash": "^4.17.4",
+    "nodemon": "^3.1.0",
+    "rimraf": "^5.0.7",
+    "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
