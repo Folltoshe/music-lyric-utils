@@ -6,6 +6,7 @@ export interface ParseLyricProps {
 }
 export interface PureLyricInfo {
   canAutoScroll: boolean
+  offset: number
   lines: {
     time: number
     lyric: string
@@ -71,5 +72,7 @@ export interface LyricInfo {
     canAutoScroll: boolean
     // 是否为纯音乐
     isPureMusic: boolean
+    // 偏移
+    offset: number
   }
 }

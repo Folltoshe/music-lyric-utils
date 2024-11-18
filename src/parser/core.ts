@@ -4,6 +4,7 @@ import { EMPTY_DYNAMIC_WORD, EMPTY_LYRIC_LINE } from './constant'
 import { calcSimularity, isEnglishSentense, replaceChineseSymbolsToEnglish } from '@root/utils'
 
 const REGEXP = {
+  OFFSET: /\[offset:(?<value>[0-9]+)]/,
   SYMBOL: /[\,\.\，\。\!\?\？\、\；\：\…\—\~\～\·\‘\’\“\”\ﾞ]/,
   EMGLISH_WORD: /[a-zA-Z]+(\'\‘\’)*[a-zA-Z]*/,
   CJK: /([\p{Unified_Ideograph}|\u3040-\u309F|\u30A0-\u30FF])/gu,
@@ -49,6 +50,7 @@ const preProcessLyric = (lyric: string) => {
 
   const result: PureLyricInfo = {
     canAutoScroll: true,
+    offset: 0,
     lines: lines.sort((a, b) => a.time - b.time),
   }
   if (lines.length === 0 && lyric.trim().length > 0) {
@@ -56,6 +58,13 @@ const preProcessLyric = (lyric: string) => {
     result.lines = parseUnsyncedLyrics(lyric)
     return result
   }
+
+  const offsetMatchs = lyric.match(REGEXP.OFFSET)
+  if (offsetMatchs) {
+    const offset = parseInt(offsetMatchs?.groups?.value || '')
+    if (!isNaN(offset)) result.offset = offset
+  }
+
   return result
 }
 // 预处理动态歌词
@@ -343,6 +352,7 @@ export class LyricParser {
       config: {
         canAutoScroll: preOriginal.canAutoScroll,
         isPureMusic: false,
+        offset: preOriginal.offset,
       },
     }
     return result
@@ -365,6 +375,7 @@ export class LyricParser {
       config: {
         canAutoScroll: preLyric.canAutoScroll,
         isPureMusic: false,
+        offset: preLyric.offset,
       },
     }
 

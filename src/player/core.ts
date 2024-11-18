@@ -135,7 +135,7 @@ export class LyricPlayer {
     this.pause()
 
     this.currentStatus.playing = true
-    this.currentStatus.performanceTime = handleGetNow() - Math.trunc(this.config.offset)
+    this.currentStatus.performanceTime = handleGetNow() - Math.trunc(this.config.offset + this.lyricInfo.config.offset)
     this.currentStatus.startTime = currentTime
 
     this.currentLineInfo.now = this.handleFindCurrentLine(this.handleGetCurrentTime()) - 1
