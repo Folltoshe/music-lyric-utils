@@ -19,6 +19,7 @@ export const EMPTY_LYRIC_INFO: LyricInfo = {
   config: {
     canAutoScroll: false,
     isPureMusic: false,
+    offset: 0,
   },
 } as const
 export const EMPTY_LYRIC_LINE: LyricLine = {
