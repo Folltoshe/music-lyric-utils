@@ -72,68 +72,81 @@ const preProcessDynamicLyric = (lyric: string) => {
   const result: LyricLine[] = []
 
   for (const line of lyric.trim().split('\n')) {
-    let tmp = line.trim()
+    let tempLine = line.trim()
 
-    const lineMatches = tmp.match(REGEXP.DYNAMIC_LINE)
+    const lineMatches = tempLine.match(REGEXP.DYNAMIC_LINE)
     if (!lineMatches) continue
 
-    tmp = lineMatches.groups?.line || ''
+    tempLine = lineMatches.groups?.line || ''
     const timestamp = parseLyricTime(lineMatches.groups?.min || '0', lineMatches.groups?.sec || '0')
     const words: DynamicWordInfo[] = []
 
-    while (tmp.length > 0) {
-      const wordMatches = tmp.match(REGEXP.DYNAMIC_LINE_WORD)
+    while (tempLine.length > 0) {
+      const wordMatches = tempLine.match(REGEXP.DYNAMIC_LINE_WORD)
       if (!wordMatches) break
+
       const wordTime = timestamp + parseInt(wordMatches.groups?.time || '0')
       const wordDuration = parseInt(wordMatches.groups?.duration || '0')
-      const word = wordMatches.groups?.word.trimStart()
-      const splitedWords = word?.split(/\s+/).filter(v => v.trim().length > 0) // 有些歌词一个单词还是一个句子的就离谱
-      if (splitedWords) {
-        const splitedDuration = wordDuration / splitedWords.length
-        splitedWords.forEach((subWord, i) => {
-          if (i === splitedWords.length - 1) {
-            if (/\s/.test((word ?? '')[(word ?? '').length - 1])) {
-              words.push({
-                time: wordTime + i * splitedDuration,
-                duration: splitedDuration,
-                text: `${subWord.trimStart()} `,
-                config: EMPTY_DYNAMIC_WORD['config'],
-              })
-            } else {
-              words.push({
-                time: wordTime + i * splitedDuration,
-                duration: splitedDuration,
-                text: subWord.trimStart(),
-                config: EMPTY_DYNAMIC_WORD['config'],
-              })
-            }
-          } else if (i === 0) {
-            if (/\s/.test((word ?? '')[0])) {
-              words.push({
-                time: wordTime + i * splitedDuration,
-                duration: splitedDuration,
-                text: ` ${subWord.trimStart()}`,
-                config: EMPTY_DYNAMIC_WORD['config'],
-              })
-            } else {
-              words.push({
-                time: wordTime + i * splitedDuration,
-                duration: splitedDuration,
-                text: subWord.trimStart(),
-                config: EMPTY_DYNAMIC_WORD['config'],
-              })
-            }
-          } else {
+      const word = wordMatches.groups?.word
+
+      tempLine = tempLine.slice(wordMatches.index || 0 + wordMatches[0].length)
+
+      if (!word) continue
+      // 某些单词内容为空格，给上一个单词补一个空格
+      if (!word.trim()) {
+        const lastWord = words[words.length - 1]
+        lastWord.text += ' '
+        continue
+      }
+
+      // 有些歌词一个单词还是一个句子的就离谱
+      const splited = word
+        .trimStart()
+        .split(/\s+/)
+        .filter(v => v.trim().length > 0)
+      const splitedDuration = wordDuration / splited.length
+      splited.forEach((subWord, i) => {
+        if (i === splited.length - 1) {
+          if (/\s/.test((word ?? '')[(word ?? '').length - 1])) {
             words.push({
               time: wordTime + i * splitedDuration,
               duration: splitedDuration,
               text: `${subWord.trimStart()} `,
               config: EMPTY_DYNAMIC_WORD['config'],
             })
+          } else {
+            words.push({
+              time: wordTime + i * splitedDuration,
+              duration: splitedDuration,
+              text: subWord.trimStart(),
+              config: EMPTY_DYNAMIC_WORD['config'],
+            })
           }
-        })
-      }
-      tmp = tmp.slice(wordMatches.index || 0 + wordMatches[0].length)
+        } else if (i === 0) {
+          if (/\s/.test((word ?? '')[0])) {
+            words.push({
+              time: wordTime + i * splitedDuration,
+              duration: splitedDuration,
+              text: ` ${subWord.trimStart()}`,
+              config: EMPTY_DYNAMIC_WORD['config'],
+            })
+          } else {
+            words.push({
+              time: wordTime + i * splitedDuration,
+              duration: splitedDuration,
+              text: subWord.trimStart(),
+              config: EMPTY_DYNAMIC_WORD['config'],
+            })
+          }
+        } else {
+          words.push({
+            time: wordTime + i * splitedDuration,
+            duration: splitedDuration,
+            text: `${subWord.trimStart()} `,
+            config: EMPTY_DYNAMIC_WORD['config'],
+          })
+        }
+      })
     }
 
     result.push({
