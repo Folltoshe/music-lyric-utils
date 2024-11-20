@@ -1,6 +1,6 @@
 {
   "name": "music-lyric-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Lyric Utils",
   "main": "./dist/music-lyric-utils.js",
   "module": "./dist/music-lyric-utils.mjs",
