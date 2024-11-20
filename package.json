@@ -17,6 +17,13 @@
       "default": "./dist/music-lyric-utils.mjs"
     }
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Folltoshe/music-lyric-utils.git"
